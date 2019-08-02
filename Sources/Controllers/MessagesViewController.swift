@@ -70,6 +70,10 @@ UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
             messageCollectionViewBottomInset += delta
         }
     }
+    
+    open var shouldAutoUpdateBottomContentInset: Bool {
+        return true
+    }
 
     public var isTypingIndicatorHidden: Bool {
         return messagesCollectionView.isTypingIndicatorHidden
@@ -120,7 +124,9 @@ UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
         if isFirstLayout {
             defer { isFirstLayout = false }
             addKeyboardObservers()
-            messageCollectionViewBottomInset = requiredInitialScrollViewBottomInset()
+            if self.shouldAutoUpdateBottomContentInset {
+                messageCollectionViewBottomInset = requiredInitialScrollViewBottomInset()
+            }
         }
         adjustScrollViewTopInset()
     }
@@ -129,6 +135,7 @@ UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
         if #available(iOS 11.0, *) {
             super.viewSafeAreaInsetsDidChange()
         }
+        guard self.shouldAutoUpdateBottomContentInset else { return }
         messageCollectionViewBottomInset = requiredInitialScrollViewBottomInset()
     }
 
